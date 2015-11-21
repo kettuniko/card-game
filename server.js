@@ -1,6 +1,6 @@
 var WebSocketServer = require('ws').Server
 
-var server = new WebSocketServer({ port: 8080 });
+var server = new WebSocketServer({ port: 8081 });
 
 var clients = []
 
