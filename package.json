@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm install && http-server . -c-1"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/kettuniko/card-game/issues"
   },
-  "homepage": "https://github.com/kettuniko/card-game#readme"
+  "homepage": "https://github.com/kettuniko/card-game#readme",
+  "dependencies": {
+    "http-server": "^0.8.5"
+  }
 }
