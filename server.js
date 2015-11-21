@@ -5,10 +5,17 @@ var server = new WebSocketServer({ port: 8080 });
 var clients = []
 
 var cards = [
-	{name: "Heh"},
-	{name: "Juu"},
-	{name: "Kjeh"},
-	{name: "Rengas"}
+	{name: "card_1"},
+	{name: "card_2"},
+	{name: "card_3"},
+	{name: "card_4"},
+	{name: "card_5"},
+	{name: "card_6"},
+	{name: "card_7"},
+	{name: "card_8"},
+	{name: "card_9"},
+	{name: "card_10"},
+	{name: "card_11"}
 ]
 
 server.on('connection', function connection(ws) {
@@ -19,10 +26,10 @@ server.on('connection', function connection(ws) {
 		gameStart(clients);
 		clients = []
 	} else {
+
 	}
 	ws.on('message', incoming);
 
-	ws.send('something');
 });
 
 function incoming(message) {
@@ -30,6 +37,5 @@ function incoming(message) {
 }
 
 function gameStart(clients) {
-	clients[0].send({type: "gameStart", cards: cards});
-	clients[1].send({type: "gameStart", cards: cards});
+	clients.forEach(client => client.send(JSON.stringify({type: "gameStart", cards: cards})))
 }

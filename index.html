@@ -5,10 +5,20 @@ exampleSocket.onopen = function (event) {
 };
 exampleSocket.onerror = function (event) {
 	alert("web soket pls " + event)
+	console.log(event)
 }
 exampleSocket.onmessage = function (event) {
-	console.log(event)
+	var cards = JSON.parse(event.data).cards
 
-	
+	var images = cards.map(card => {
+		var img = new Image()
+		img.src = "cards/" + card.name + '.png'
+		return img
+	})
+
+	images.forEach(image => document.body.appendChild(image))
+	document.getElementById('message').innerHTML = 'game started'
 }
 </script>
+
+<p id="message">waiting for other player</p>
