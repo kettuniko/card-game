@@ -1,0 +1,13 @@
+#game-area {
+  height: 200px;
+  background: green;
+}
+
+#my-cards {
+  height: 200px;
+}
+
+#my-cards img {
+  width: 100px;
+  padding: 5px;
+}
