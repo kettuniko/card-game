@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run start-prod",
     "start-prod": "npm install && npm run build-js-prod && npm run server-prod",
-    "start-dev": "npm install && npm run watch-client & npm run watch-server",
+    "start-dev": "npm install && (npm run watch-client & npm run watch-server)",
     "watch-client": "watchify app/client.js --debug -o bundle.js -v",
     "watch-server": "supervisor --quiet --ignore node_modules --watch app app/bootstrap.js",
     "build-js-prod": "browserify --entry app/client.js | uglifyjs --compress --mangle > .generated/bundle.js",
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/kettuniko/card-game#readme",
   "dependencies": {
-    "babel": "6.1.18",
+    "babel-core": "6.2.1",
     "babel-preset-es2015": "6.1.18",
     "babel-preset-react": "6.1.18",
     "babel-preset-stage-0": "6.1.18",
