@@ -22,7 +22,7 @@ const cards = [
 ]
 
 export const start = port => {
-  io.on('connection', function (socket) {
+  io.on('connection', (socket) => {
     const client = {
       clientId: new Date(),
       socket: socket
