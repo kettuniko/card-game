@@ -1,4 +1,6 @@
 import http from 'http'
+import fs from 'fs'
+import path from 'path'
 import socketIO from 'socket.io'
 const server = http.createServer();
 const io = socketIO(server);
@@ -7,19 +9,9 @@ let clients = []
 
 let games = []
 
-const cards = [
-  {name: "card_1"},
-  {name: "card_2"},
-  {name: "card_3"},
-  {name: "card_4"},
-  {name: "card_5"},
-  {name: "card_6"},
-  {name: "card_7"},
-  {name: "card_8"},
-  {name: "card_9"},
-  {name: "card_10"},
-  {name: "card_11"}
-]
+const cards = fs.readdirSync('img')
+  .map(fileName => path.basename(`img/${fileName}`, '.png'))
+  .map(name => ({name: name}))
 
 export const start = port => {
   io.on('connection', (socket) => {
