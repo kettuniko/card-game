@@ -1,13 +1,13 @@
 import http from 'http'
 import socketIO from 'socket.io'
-var server = http.createServer();
-var io = socketIO(server);
+const server = http.createServer();
+const io = socketIO(server);
 
-var clients = []
+let clients = []
 
-var games = []
+let games = []
 
-var cards = [
+const cards = [
   {name: "card_1"},
   {name: "card_2"},
   {name: "card_3"},
@@ -23,7 +23,7 @@ var cards = [
 
 export const start = port => {
   io.on('connection', function (socket) {
-    var client = {
+    const client = {
       clientId: new Date(),
       socket: socket
     }
@@ -41,14 +41,14 @@ export const start = port => {
         }
       ]
 
-      var gameState = {
+      const gameState = {
         message: 'Game start!',
         players: players,
         currentPlayer: players[0], // TODO
         opponent: players[1] // TODO
       }
 
-      var game = {
+      const game = {
         clients: clients,
         gameState: gameState
       }
