@@ -2,6 +2,7 @@ import React from 'react'
 import Bacon from 'baconjs'
 import socketIO from 'socket.io-client'
 const io = socketIO('localhost:8081');
+const log = console.log.bind(console)
 
 export const pagePath = '/'
 export const pageTitle = 'Game'
@@ -29,9 +30,9 @@ const errors = events('error')
 const gameStarts = events('game-start')
 const turns = events('turn')
 
-connects.onValue(() => console.log('connected to server'))
-disconnects.onValue(() => console.log('disconnected from server'))
-errors.onValue((err) => console.log('error', err))
+connects.onValue(() => log('connected to server'))
+disconnects.onValue(() => log('disconnected from server'))
+errors.onValue((err) => log('error', err))
 
 const imageNamesToElements = gameState => Object.assign(gameState, mapAllCardsToElements(gameState))
 const mapAllCardsToElements = gameState => Object.assign(gameState, {players: gameState.players.map(playerCardsToElements)})
@@ -45,7 +46,7 @@ const gameStateChanges = gameStarts
   .map('.gameState')
   .map(imageNamesToElements)
 
-turns.onValue((msg) => console.log('turn', msg))
+turns.onValue((msg) => log('turn', msg))
 
 export const applicationStateProperty = initialState => gameStateChanges
   .toProperty(initialState)
