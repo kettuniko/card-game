@@ -13,7 +13,7 @@ const server = express()
 server.use(compression({threshold: 512}))
 
 const cssFilePath = path.resolve(`${__dirname}/../styles.css`)
-const bundleJsFilePath = path.resolve(`${__dirname}/../bundle.js`)
+const bundleJsFilePath = path.resolve(`${__dirname}/../.generated/bundle.js`)
 
 server.get('*', (req, res, next) => {
   const page = pages.findPage(req.url)
