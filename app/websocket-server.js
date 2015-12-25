@@ -2,8 +2,8 @@ import http from 'http'
 import fs from 'fs'
 import path from 'path'
 import socketIO from 'socket.io'
-const server = http.createServer();
-const io = socketIO(server);
+const server = http.createServer()
+const io = socketIO(server)
 
 let clients = []
 
@@ -21,7 +21,7 @@ export const start = port => {
     }
     clients.push(client)
 
-    if (clients.length == 2) {
+    if (clients.length === 2) {
       const players = [
         {
           id: clients[0].clientId,
@@ -47,7 +47,7 @@ export const start = port => {
       games.push(game)
 
       game.clients.forEach(client => {
-        console.log('sending msg to client');
+        console.log('sending msg to client')
         client.socket.emit('game-start', JSON.stringify({
           gameState: gameState
         }))
@@ -61,9 +61,9 @@ export const start = port => {
       console.log('waiting for other player')
     }
 
-    socket.on('play-card', (card) => console.log('playing card', card));
-    socket.on('disconnect', () => console.log('client disconnected', client));
-  });
-  server.listen(port);
+    socket.on('play-card', (card) => console.log('playing card', card))
+    socket.on('disconnect', () => console.log('client disconnected', client))
+  })
+  server.listen(port)
 }
 

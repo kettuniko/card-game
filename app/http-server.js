@@ -1,5 +1,4 @@
 import express from 'express'
-import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import basePage from './pages/basePage.js'
 import * as pages from './pages/pages.js'
@@ -40,7 +39,7 @@ server.get('*', (req, res, next) => {
 const serveStaticResource = filePath => (req, res, next) => {
   checksumPromise(filePath)
     .then(checksum => {
-      if (req.query.checksum == checksum) {
+      if (req.query.checksum === checksum) {
         const oneYearInSeconds = 60 * 60 * 24 * 356
         res.setHeader('Cache-Control', `public, max-age=${oneYearInSeconds}`)
         res.sendFile(filePath)
@@ -54,7 +53,7 @@ const serveStaticResource = filePath => (req, res, next) => {
 server.get('/styles.css', serveStaticResource(cssFilePath))
 
 server.get('/bundle.js', serveStaticResource(bundleJsFilePath))
-server.use('/img', express.static(path.resolve(`${__dirname}/../img`)));
+server.use('/img', express.static(path.resolve(`${__dirname}/../img`)))
 
 const checksumPromise = filePath =>
   fs
