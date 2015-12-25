@@ -11,7 +11,7 @@ let games = []
 
 const cards = fs.readdirSync('img')
   .map(fileName => path.basename(`img/${fileName}`, '.png'))
-  .map(name => ({name: name}))
+  .map(name => ({name}))
 
 export const start = port => {
   io.on('connection', (socket) => {
