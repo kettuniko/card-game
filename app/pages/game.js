@@ -41,9 +41,10 @@ export const renderPage = applicationState =>
     </div>
   </body>
 
-export const applicationStateProperty = initialState => gameStateChanges
-  .toProperty(initialState)
-  .doLog('app state')
+export const applicationStateProperty = initialState =>
+  gameStateChanges
+    .toProperty(initialState)
+    .doLog('app state')
 
 export const pagePath = '/'
 export const pageTitle = 'Game'
