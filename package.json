@@ -13,7 +13,7 @@
     "build-js-prod": "browserify --entry app/client.js | uglifyjs --compress --mangle > .generated/bundle.js",
     "server-prod": "forever app/bootstrap.js",
     "check": "npm-check",
-    "check-u": "npm-check -u"
+    "upgrade": "npm-check -u"
   },
   "repository": {
     "type": "git",
