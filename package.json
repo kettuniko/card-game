@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run start-prod",
+    "start": "npm run start-dev",
     "start-prod": "npm install && npm run build-js-prod && npm run server-prod",
     "start-dev": "npm install && (npm run watch-client & npm run watch-server & npm run watch-lint)",
     "watch-client": "watchify app/client.js --debug -o bundle.js -v",
