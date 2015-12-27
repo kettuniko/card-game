@@ -32,9 +32,9 @@ export const initialState = {
 
 export const renderPage = applicationState =>
   <body>
-    <p id="message">{applicationState.message}</p>
-    <div id="game-area"></div>
-    <div id="my-cards">
+    <p id='message'>{applicationState.message}</p>
+    <div id='game-area'></div>
+    <div id='my-cards'>
       {applicationState.players[0].cards.map(card =>
         <img key={card.name} src={`img/${card.name}.png`} onClick={playCard(card.name)} />
       )}
