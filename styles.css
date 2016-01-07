@@ -3,11 +3,11 @@
   background: green;
 }
 
-#my-cards {
+.cards {
   height: 200px;
 }
 
-#my-cards img {
+.cards img {
   width: 100px;
   padding: 5px;
 }
