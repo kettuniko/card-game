@@ -1,5 +1,5 @@
 require('babel-core/register')
 require('colors')
 require('./http-server')
-  .start(process.env.PORT || 8080)
+  .start(require('./port'))
   .then(require('./websocket-server').start)
