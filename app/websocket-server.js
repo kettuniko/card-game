@@ -30,7 +30,7 @@ const send = gameMessage => gameMessage.receiver.emit('game-state', JSON.stringi
 const createId = () => new Date().getTime()
 
 const startGame = players => {
-  const cards = players.map(player => ({id: player.id, cards: chooseRandomCards()}))
+  const playerCards = players.map(player => ({id: player.id, cards: chooseRandomCards()}))
   const cardsPlayed = []
 
   const addCardToTable = card => cardsPlayed.push({...card, playId: createId()})
@@ -39,7 +39,7 @@ const startGame = players => {
     playerCards.splice(playerCards.indexOf(card))
   }
   const findOpponent = player => players.find(p => p !== player)
-  const findCards = player => _.findWhere(cards, {id: player.id}).cards
+  const findCards = player => _.findWhere(playerCards, {id: player.id}).cards
 
   const toGameState = gameMessage => {
     const opponent = findOpponent(gameMessage.receiver)
