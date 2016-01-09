@@ -25,6 +25,8 @@ export const start = port => {
 }
 const offTurn = () => ({inTurn: false})
 const onTurn = () => ({inTurn: true})
+const to = receiver => state => ({state, receiver})
+const send = gameMessage => gameMessage.receiver.emit('game-state', JSON.stringify(gameMessage.state))
 
 const startGame = players => {
   const cards = players.map(player => ({id: player.id, cards: chooseRandomCards()}))
@@ -38,25 +40,29 @@ const startGame = players => {
   const findOpponent = player => players.find(p => p !== player)
   const findCards = player => _.findWhere(cards, {id: player.id}).cards
 
-  const emitState = player => state => {
-    const opponent = findOpponent(player)
-    const playerCards = findCards(player)
+  const toGameState = gameMessage => {
+    const opponent = findOpponent(gameMessage.receiver)
+    const playerCards = findCards(gameMessage.receiver)
     const opponentCards = findCards(opponent)
-    player.emit('game-state', JSON.stringify({...state, playerCards: playerCards, opponentCards: opponentCards, cardsPlayed: cardsPlayed}))
+    return {...gameMessage, state: {...gameMessage.state, playerCards, opponentCards, cardsPlayed}}
   }
 
-  players.forEach(player => {
+  const playActions = players.map(player => {
     const opponent = findOpponent(player)
-    const playsCard = Bacon
-      .fromEvent(player, 'play-card')
+    const playsCard = Bacon.fromEvent(player, 'play-card')
       .doAction(addCardToTable)
       .doAction(removeCardFromHand(player))
 
-    playsCard.map(offTurn).onValue(emitState(player))
-    playsCard.map(onTurn).onValue(emitState(opponent))
+    const playerOffTurns = playsCard.map(offTurn).map(to(player))
+    const opponentOnTurns = playsCard.map(onTurn).map(to(opponent))
+    return playerOffTurns.merge(opponentOnTurns)
   })
+
   const startingPlayer = _.sample(players)
   const otherPlayer = findOpponent(startingPlayer)
-  Bacon.once(onTurn()).onValue(emitState(startingPlayer))
-  Bacon.once(offTurn()).onValue(emitState(otherPlayer))
+
+  const firstInTurn = Bacon.once(onTurn()).map(to(startingPlayer))
+  const firstOffTurn = Bacon.once(offTurn()).map(to(otherPlayer))
+  const gameStarts = firstInTurn.merge(firstOffTurn)
+  Bacon.mergeAll([gameStarts, ...playActions]).map(toGameState).onValue(send)
 }
