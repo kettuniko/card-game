@@ -18,35 +18,34 @@ const chooseRandomCards = () => _.chain(cards).shuffle().take(5).value()
 
 export const start = port => {
   server.listen(port)
-
-  playerConnects
-    .bufferWithCount(playersPerGame)
-    .onValue(startGame)
+  playerConnects.bufferWithCount(playersPerGame).onValue(startGame)
 }
+
+const createId = () => new Date().getTime()
 const offTurn = () => ({inTurn: false})
 const onTurn = () => ({inTurn: true})
 const to = receiver => state => ({state, receiver})
 const send = gameMessage => gameMessage.receiver.emit('game-state', JSON.stringify(gameMessage.state))
-const createId = () => new Date().getTime()
 
 const startGame = players => {
-  const playerCards = players.map(player => ({id: player.id, cards: chooseRandomCards()}))
   const cardsPlayed = []
+  const playerCards = players.map(player => ({id: player.id, cards: chooseRandomCards()}))
+
+  const findOpponent = player => players.find(p => p !== player)
+  const findCards = player => _.findWhere(playerCards, {id: player.id}).cards
 
   const addCardToPlayed = card => cardsPlayed.push({...card, playId: createId()})
   const removeCard = player => card => {
     const playerCards = findCards(player)
     playerCards.splice(playerCards.indexOf(card))
   }
-  const findOpponent = player => players.find(p => p !== player)
-  const findCards = player => _.findWhere(playerCards, {id: player.id}).cards
 
-  const toGameState = gameMessage => {
-    const opponent = findOpponent(gameMessage.receiver)
-    const playerCards = findCards(gameMessage.receiver)
-    const opponentCards = findCards(opponent)
-    return {...gameMessage, state: {...gameMessage.state, playerCards, opponentCards, cardsPlayed}}
-  }
+  const startingPlayer = _.sample(players)
+  const otherPlayer = findOpponent(startingPlayer)
+
+  const firstInTurn = Bacon.once(onTurn()).map(to(startingPlayer))
+  const firstOffTurn = Bacon.once(offTurn()).map(to(otherPlayer))
+  const gameStarts = firstInTurn.merge(firstOffTurn)
 
   const playActions = players.map(player => {
     const opponent = findOpponent(player)
@@ -59,11 +58,12 @@ const startGame = players => {
     return playerOffTurns.merge(opponentOnTurns)
   })
 
-  const startingPlayer = _.sample(players)
-  const otherPlayer = findOpponent(startingPlayer)
+  const toGameState = gameMessage => {
+    const opponent = findOpponent(gameMessage.receiver)
+    const playerCards = findCards(gameMessage.receiver)
+    const opponentCards = findCards(opponent)
+    return {...gameMessage, state: {...gameMessage.state, playerCards, opponentCards, cardsPlayed}}
+  }
 
-  const firstInTurn = Bacon.once(onTurn()).map(to(startingPlayer))
-  const firstOffTurn = Bacon.once(offTurn()).map(to(otherPlayer))
-  const gameStarts = firstInTurn.merge(firstOffTurn)
   Bacon.mergeAll([gameStarts, ...playActions]).map(toGameState).onValue(send)
 }
