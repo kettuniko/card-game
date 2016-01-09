@@ -37,7 +37,7 @@ const startGame = players => {
   const addCardToPlayed = card => cardsPlayed.push({...card, playId: createId()})
   const removeCardFromPlayer = player => card => {
     const playerCards = findCards(player)
-    playerCards.splice(playerCards.indexOf(card))
+    playerCards.splice(_.findIndex(playerCards, card), 1)
   }
 
   const startingPlayer = _.sample(players)
