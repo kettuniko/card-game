@@ -24,7 +24,6 @@ const gameStateChanges = gameStates
 const playCard = card => () => io.emit('play-card', {name: card})
 
 export const initialState = {
-  message: 'waiting for other player',
   inTurn: false,
   playerCards: [],
   opponentCards: [],
