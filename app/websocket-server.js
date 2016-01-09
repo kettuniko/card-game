@@ -23,22 +23,14 @@ export const start = port => {
     .bufferWithCount(playersPerGame)
     .onValue(startGame)
 }
-const offTurn = state => ({...state, inTurn: false})
-const onTurn = state => ({...state, inTurn: true})
+const offTurn = () => ({inTurn: false})
+const onTurn = () => ({inTurn: true})
 
 const startGame = players => {
   const cards = players.map(player => ({id: player.id, cards: chooseRandomCards()}))
+  const cardsPlayed = []
 
-  const state = {
-    message: 'from-server',
-    inTurn: false,
-    playerCards: [],
-    opponentCards: [],
-    cardsPlayed: []
-  }
-  const initialState = Bacon.constant(state)
-
-  const addCardToTable = card => state.cardsPlayed.push({...card, playId: new Date().getTime()})
+  const addCardToTable = card => cardsPlayed.push({...card, playId: new Date().getTime()})
   const removeCardFromHand = player => card => {
     const playerCards = findCards(player)
     playerCards.splice(playerCards.indexOf(card))
@@ -50,7 +42,7 @@ const startGame = players => {
     const opponent = findOpponent(player)
     const playerCards = findCards(player)
     const opponentCards = findCards(opponent)
-    player.emit('game-state', JSON.stringify({...state, playerCards: playerCards, opponentCards: opponentCards}))
+    player.emit('game-state', JSON.stringify({...state, playerCards: playerCards, opponentCards: opponentCards, cardsPlayed: cardsPlayed}))
   }
 
   players.forEach(player => {
@@ -59,12 +51,12 @@ const startGame = players => {
       .fromEvent(player, 'play-card')
       .doAction(addCardToTable)
       .doAction(removeCardFromHand(player))
-      .map(state)
 
-    initialState.onValue(emitState(player))
     playsCard.map(offTurn).onValue(emitState(player))
     playsCard.map(onTurn).onValue(emitState(opponent))
   })
   const startingPlayer = _.sample(players)
-  Bacon.once(state).map(onTurn).onValue(emitState(startingPlayer))
+  const otherPlayer = findOpponent(startingPlayer)
+  Bacon.once(onTurn()).onValue(emitState(startingPlayer))
+  Bacon.once(offTurn()).onValue(emitState(otherPlayer))
 }
