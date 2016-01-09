@@ -11,7 +11,7 @@
     "watch-server": "supervisor --quiet --ignore node_modules --watch app app/bootstrap.js",
     "watch-lint": "nodemon --watch app --exec 'standard'",
     "build-js-prod": "browserify --entry app/client.js | uglifyjs --compress --mangle > .generated/bundle.js",
-    "server-prod": "forever app/bootstrap.js",
+    "server-prod": "NODE_ENV=production forever app/bootstrap.js",
     "check": "npm-check",
     "upgrade": "npm-check --update"
   },

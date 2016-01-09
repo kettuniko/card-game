@@ -1,1 +1,1 @@
-module.exports = process.env.PORT || 8080
+export default process.env.PORT || 8080

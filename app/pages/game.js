@@ -1,8 +1,8 @@
 import React from 'react'
 import Bacon from 'baconjs'
 import socketIO from 'socket.io-client'
-import port from '../port'
-const io = socketIO(`localhost:${port}`)
+import config from '../config'
+const io = socketIO(config.gameServerHost)
 
 const log = ::console.log
 const parseJson = raw => JSON.parse(raw)
