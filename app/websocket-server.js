@@ -1,23 +1,19 @@
-import http from 'http'
 import fs from 'fs'
 import path from 'path'
 import socketIO from 'socket.io'
 import Bacon from 'baconjs'
 import _ from 'lodash'
-const server = http.createServer()
-const io = socketIO(server)
 
-const playerConnects = Bacon.fromEvent(io, 'connection')
 const playersPerGame = 2
-
 const cards = fs.readdirSync('img')
   .map(fileName => path.basename(`img/${fileName}`, '.png'))
   .map(name => ({name}))
 
 const chooseRandomCards = () => _.chain(cards).shuffle().take(5).value()
 
-export const start = port => {
-  server.listen(port)
+export const start = server => {
+  const io = socketIO(server)
+  const playerConnects = Bacon.fromEvent(io, 'connection')
   playerConnects.bufferWithCount(playersPerGame).onValue(startGame)
 }
 

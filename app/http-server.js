@@ -1,3 +1,4 @@
+import http from 'http'
 import express from 'express'
 import ReactDOMServer from 'react-dom/server'
 import basePage from './pages/basePage.js'
@@ -7,15 +8,15 @@ import compression from 'compression'
 import crypto from 'crypto'
 import Promise from 'bluebird'
 const fs = Promise.promisifyAll(require('fs'))
+const app = express()
+const server = http.createServer(app)
 
-const server = express()
-
-server.use(compression({threshold: 512}))
+app.use(compression({threshold: 512}))
 
 const cssFilePath = path.resolve(`${__dirname}/../styles.css`)
 const bundleJsFilePath = path.resolve(`${__dirname}/../.generated/bundle.js`)
 
-server.get('*', (req, res, next) => {
+app.get('*', (req, res, next) => {
   const page = pages.findPage(req.url)
   if (page) {
     Promise
@@ -50,10 +51,10 @@ const serveStaticResource = filePath => (req, res, next) => {
     .catch(next)
 }
 
-server.get('/styles.css', serveStaticResource(cssFilePath))
+app.get('/styles.css', serveStaticResource(cssFilePath))
 
-server.get('/bundle.js', serveStaticResource(bundleJsFilePath))
-server.use('/img', express.static(path.resolve(`${__dirname}/../img`)))
+app.get('/bundle.js', serveStaticResource(bundleJsFilePath))
+app.use('/img', express.static(path.resolve(`${__dirname}/../img`)))
 
 const checksumPromise = filePath =>
   fs
@@ -68,5 +69,5 @@ export const start = port => {
   }
   return new Promise((resolve, reject) => {
     server.listen(port, resolve)
-  }).then(reportPages)
+  }).then(reportPages).then(() => server)
 }

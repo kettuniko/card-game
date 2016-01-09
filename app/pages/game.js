@@ -1,7 +1,7 @@
 import React from 'react'
 import Bacon from 'baconjs'
 import socketIO from 'socket.io-client'
-const io = socketIO('localhost:8081')
+const io = socketIO('localhost:8080')
 
 const log = ::console.log
 const parseJson = raw => JSON.parse(raw)
