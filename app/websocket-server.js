@@ -27,12 +27,13 @@ const offTurn = () => ({inTurn: false})
 const onTurn = () => ({inTurn: true})
 const to = receiver => state => ({state, receiver})
 const send = gameMessage => gameMessage.receiver.emit('game-state', JSON.stringify(gameMessage.state))
+const createId = () => new Date().getTime()
 
 const startGame = players => {
   const cards = players.map(player => ({id: player.id, cards: chooseRandomCards()}))
   const cardsPlayed = []
 
-  const addCardToTable = card => cardsPlayed.push({...card, playId: new Date().getTime()})
+  const addCardToTable = card => cardsPlayed.push({...card, playId: createId()})
   const removeCardFromHand = player => card => {
     const playerCards = findCards(player)
     playerCards.splice(playerCards.indexOf(card))
