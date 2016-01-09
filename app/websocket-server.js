@@ -33,8 +33,8 @@ const startGame = players => {
   const playerCards = players.map(player => ({id: player.id, cards: chooseRandomCards()}))
   const cardsPlayed = []
 
-  const addCardToTable = card => cardsPlayed.push({...card, playId: createId()})
-  const removeCardFromHand = player => card => {
+  const addCardToPlayed = card => cardsPlayed.push({...card, playId: createId()})
+  const removeCard = player => card => {
     const playerCards = findCards(player)
     playerCards.splice(playerCards.indexOf(card))
   }
@@ -51,8 +51,8 @@ const startGame = players => {
   const playActions = players.map(player => {
     const opponent = findOpponent(player)
     const playsCard = Bacon.fromEvent(player, 'play-card')
-      .doAction(addCardToTable)
-      .doAction(removeCardFromHand(player))
+      .doAction(addCardToPlayed)
+      .doAction(removeCard(player))
 
     const playerOffTurns = playsCard.map(offTurn).map(to(player))
     const opponentOnTurns = playsCard.map(onTurn).map(to(opponent))
