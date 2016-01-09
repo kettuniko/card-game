@@ -35,7 +35,7 @@ const startGame = players => {
   const findCards = player => _.findWhere(playerCards, {id: player.id}).cards
 
   const addCardToPlayed = card => cardsPlayed.push({...card, playId: createId()})
-  const removeCard = player => card => {
+  const removeCardFromPlayer = player => card => {
     const playerCards = findCards(player)
     playerCards.splice(playerCards.indexOf(card))
   }
@@ -51,7 +51,7 @@ const startGame = players => {
     const opponent = findOpponent(player)
     const playsCard = Bacon.fromEvent(player, 'play-card')
       .doAction(addCardToPlayed)
-      .doAction(removeCard(player))
+      .doAction(removeCardFromPlayer(player))
 
     const playerOffTurns = playsCard.map(offTurn).map(to(player))
     const opponentOnTurns = playsCard.map(onTurn).map(to(opponent))
