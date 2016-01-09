@@ -20,8 +20,8 @@ export const start = server => {
 const createId = () => new Date().getTime()
 const offTurn = () => ({inTurn: false})
 const onTurn = () => ({inTurn: true})
-const to = receiver => state => ({state, receiver})
-const send = gameMessage => gameMessage.receiver.emit('game-state', JSON.stringify(gameMessage.state))
+const to = receiver => state => ({receiver, state})
+const send = ({receiver, state}) => receiver.emit('game-state', JSON.stringify(state))
 
 const startGame = players => {
   const cardsPlayed = []
@@ -54,11 +54,11 @@ const startGame = players => {
     return playerOffTurns.merge(opponentOnTurns)
   })
 
-  const toGameState = gameMessage => {
-    const opponent = findOpponent(gameMessage.receiver)
-    const playerCards = findCards(gameMessage.receiver)
+  const toGameState = ({receiver, state}) => {
+    const opponent = findOpponent(receiver)
+    const playerCards = findCards(receiver)
     const opponentCards = findCards(opponent)
-    return {...gameMessage, state: {...gameMessage.state, playerCards, opponentCards, cardsPlayed}}
+    return {state: {...state, playerCards, opponentCards, cardsPlayed}, receiver}
   }
 
   Bacon.mergeAll([gameStarts, ...playActions]).map(toGameState).onValue(send)
