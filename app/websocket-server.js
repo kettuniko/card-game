@@ -28,7 +28,7 @@ const startGame = players => {
   const playerCards = players.map(player => ({id: player.id, cards: chooseRandomCards()}))
 
   const findOpponent = player => players.find(p => p !== player)
-  const findCards = player => _.findWhere(playerCards, {id: player.id}).cards
+  const findCards = player => _.find(playerCards, {id: player.id}).cards
 
   const addCardToPlayed = card => cardsPlayed.push({...card, playId: createId()})
   const removeCardFromPlayer = player => card => {
