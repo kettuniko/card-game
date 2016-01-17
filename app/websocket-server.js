@@ -9,7 +9,7 @@ const cards = fs.readdirSync('img')
   .map(fileName => path.basename(`img/${fileName}`, '.png'))
   .map(name => ({name}))
 
-const chooseRandomCards = () => _.chain(cards).shuffle().take(5).value()
+const chooseRandomCards = () => _(cards).shuffle().take(5).value()
 
 export const start = server => {
   const io = socketIO(server)
